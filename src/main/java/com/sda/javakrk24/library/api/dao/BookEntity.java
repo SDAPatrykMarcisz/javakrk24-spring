@@ -3,6 +3,7 @@ package com.sda.javakrk24.library.api.dao;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,8 +17,13 @@ public class BookEntity {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "author")
-    private String author;
+    @ManyToMany
+    @JoinTable(
+            name = "books_author",
+            joinColumns = { @JoinColumn(name = "book_id") },
+            inverseJoinColumns = { @JoinColumn(name = "author_id") }
+    )
+    private List<AuthorEntity> authors;
 
     @Column(name = "pages")
     private int pages;

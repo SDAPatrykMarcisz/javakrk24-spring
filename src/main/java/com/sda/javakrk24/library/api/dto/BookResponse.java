@@ -3,12 +3,14 @@ package com.sda.javakrk24.library.api.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
-public class Book {
+public class BookResponse {
 
     private String title;
-    private String author;
+    private List<Author> authors;
     private int pages;
     private int publishYear;
     private String isbn;
