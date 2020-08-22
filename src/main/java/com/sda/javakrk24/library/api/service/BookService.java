@@ -1,23 +1,50 @@
 package com.sda.javakrk24.library.api.service;
 
+import com.sda.javakrk24.library.api.dao.BookEntity;
 import com.sda.javakrk24.library.api.dto.Book;
 import com.sda.javakrk24.library.api.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final BookConverter converter;
+    private final BookConverter bookConverter;
 
     @Autowired
-    public BookService (BookRepository bookRepository, BookConverter bookConverter){
+    public BookService(BookRepository bookRepository, BookConverter bookConverter) {
         this.bookRepository = bookRepository;
-        this.converter = bookConverter;
+        this.bookConverter = bookConverter;
     }
 
     public void saveBook(Book request) {
-        bookRepository.save(converter.fromDto(request));
+        bookRepository.save(bookConverter.fromDto(request));
+    }
+
+    public List<Book> fetchAllBooks() {
+        return bookRepository.findAll().stream()
+                .map(bookEntity -> bookConverter.fromDao(bookEntity))
+                .collect(Collectors.toList());
+    }
+
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id)
+                .map(bookConverter::fromDao)
+                .orElseThrow();
+    }
+
+    @Transactional
+    public void replaceBook(Long id, Book request) {
+        BookEntity entityToReplace = bookRepository.findById(id).orElseThrow(() -> new IllegalArgumentException());
+        entityToReplace.setAuthor(request.getAuthor());
+        entityToReplace.setTitle(request.getTitle());
+        entityToReplace.setPages(request.getPages());
+        entityToReplace.setPublishYear(request.getPublishYear());
+        entityToReplace.setIsbn(request.getIsbn());
     }
 }
