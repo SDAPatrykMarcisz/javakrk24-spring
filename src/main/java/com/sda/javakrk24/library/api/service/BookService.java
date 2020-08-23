@@ -5,12 +5,12 @@ import com.sda.javakrk24.library.api.dto.BookRequest;
 import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.exception.ErrorCode;
 import com.sda.javakrk24.library.api.exception.LibraryAppException;
+import com.sda.javakrk24.library.api.external.google.books.GoogleBooksApiClient;
 import com.sda.javakrk24.library.api.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,11 +19,13 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookConverter bookConverter;
+    private final GoogleBooksApiClient booksApiClient;
 
     @Autowired
-    public BookService(BookRepository bookRepository, BookConverter bookConverter) {
+    public BookService(BookRepository bookRepository, BookConverter bookConverter, GoogleBooksApiClient booksApiClient) {
         this.bookRepository = bookRepository;
         this.bookConverter = bookConverter;
+        this.booksApiClient = booksApiClient;
     }
 
     public void saveBook(BookRequest request) {
@@ -57,6 +59,7 @@ public class BookService {
     }
 
     public BookResponse findByIsbnExternal(String isbn) {
+        booksApiClient.getBookByIsbn(isbn);
         //1. zapytanie do zewnetrznego serwisu
         //2. konwersja uzyskanych danych do naszej postaci
         //3. zwrocenie danych do controllera

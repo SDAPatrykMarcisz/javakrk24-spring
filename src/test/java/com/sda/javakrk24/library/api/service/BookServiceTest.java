@@ -3,11 +3,11 @@ package com.sda.javakrk24.library.api.service;
 import com.sda.javakrk24.library.api.dao.BookEntity;
 import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.exception.LibraryAppException;
+import com.sda.javakrk24.library.api.external.google.books.GoogleBooksApiClient;
 import com.sda.javakrk24.library.api.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,12 +23,14 @@ class BookServiceTest {
     private BookRepository bookRepository;
     @Mock
     private BookConverter bookConverter;
+    @Mock
+    private GoogleBooksApiClient booksApiClient;
 
     private BookService bookService;
 
     @BeforeEach
     void setUp(){
-        bookService = new BookService(bookRepository, bookConverter);
+        bookService = new BookService(bookRepository, bookConverter, booksApiClient);
     }
 
     @Test
