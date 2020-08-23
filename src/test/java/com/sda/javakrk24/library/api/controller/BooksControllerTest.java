@@ -1,6 +1,7 @@
 package com.sda.javakrk24.library.api.controller;
 
 import com.sda.javakrk24.library.api.dto.BookRequest;
+import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -27,10 +29,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BooksController.class)
 @DisplayName("Books Controller Test")
@@ -110,6 +110,27 @@ class BooksControllerTest {
                 .andExpect(jsonPath("$.httpStatus", equalTo(500)))
                 .andExpect(jsonPath("$.message", equalTo("Wystąpił nieoczekiwany błąd")))
                 .andExpect(jsonPath("$.httpStatusMessage", equalTo("500 INTERNAL_SERVER_ERROR")));
+    }
+
+    @Test
+    void shouldReturnResponseBookWhenIdFounded() throws Exception {
+        //when
+        BookResponse response = BookResponse.builder()
+                .authors(Collections.emptyList())
+                .title("Alicja w krainie czarów")
+                .isbn("1234567890")
+                .publishYear(1920)
+                .pages(120)
+                .build();
+        when(bookService.getBookById(10L)).thenReturn(response);
+
+        mvc.perform(get("/api/books/10"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.title", equalTo("Alicja w krainie czarów")))
+                .andExpect(jsonPath("$.authors", equalTo(Collections.EMPTY_LIST)))
+                .andExpect(jsonPath("$.pages", equalTo(120)))
+                .andExpect(jsonPath("$.publishYear", equalTo(1920)))
+                .andExpect(jsonPath("$.isbn", equalTo("1234567890")));
     }
 
     private String resourceToString(Resource requestBody) throws IOException {
