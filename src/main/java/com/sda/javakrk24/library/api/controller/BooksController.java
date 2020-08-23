@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,11 @@ public class BooksController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveBook(@RequestBody BookRequest request){
         bookService.saveBook(request);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/external/{isbn}")
+    public BookResponse searchByIsbnExternal(@PathVariable("isbn") String isbn){
+        return bookService.findByIsbnExternal(isbn);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

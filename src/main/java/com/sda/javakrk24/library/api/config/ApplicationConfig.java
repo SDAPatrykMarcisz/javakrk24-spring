@@ -17,5 +17,4 @@ public class ApplicationConfig {
     public BookEntity bookEntityPrototype(){
         return new BookEntity();
     }
-
 }

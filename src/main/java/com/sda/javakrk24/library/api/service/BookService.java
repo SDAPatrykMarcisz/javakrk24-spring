@@ -50,11 +50,16 @@ public class BookService {
         entityToReplace.setPages(request.getPages());
         entityToReplace.setPublishYear(request.getPublishYear());
         entityToReplace.setIsbn(request.getIsbn());
-        throw new NullPointerException();
-
     }
 
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
+    }
+
+    public BookResponse findByIsbnExternal(String isbn) {
+        //1. zapytanie do zewnetrznego serwisu
+        //2. konwersja uzyskanych danych do naszej postaci
+        //3. zwrocenie danych do controllera
+        return null;
     }
 }
