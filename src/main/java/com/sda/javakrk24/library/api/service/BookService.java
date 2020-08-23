@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,8 @@ public class BookService {
         entityToReplace.setPages(request.getPages());
         entityToReplace.setPublishYear(request.getPublishYear());
         entityToReplace.setIsbn(request.getIsbn());
+        throw new NullPointerException();
+
     }
 
     public void deleteBook(Long id) {

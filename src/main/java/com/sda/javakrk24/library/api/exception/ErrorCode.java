@@ -1,7 +1,9 @@
 package com.sda.javakrk24.library.api.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public enum ErrorCode {
 
     GENERAL_ERROR("LA1", "Wystąpił nieoczekiwany błąd", HttpStatus.INTERNAL_SERVER_ERROR),
