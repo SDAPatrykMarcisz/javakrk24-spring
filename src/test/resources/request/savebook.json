@@ -1,6 +1,6 @@
 {
   "title" : "jedyny prawdziwy testowy",
-  "authors" : "data",
+  "authors" : ["1", "2", "3"],
   "pages" : "120",
   "publishYear" : "1992",
   "isbn" : "data"
