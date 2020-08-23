@@ -1,7 +1,9 @@
 package com.sda.javakrk24.library.api.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class LibraryAppException extends RuntimeException {
 
     private String errorCode;

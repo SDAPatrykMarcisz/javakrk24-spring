@@ -2,6 +2,7 @@ package com.sda.javakrk24.library.api.service;
 
 import com.sda.javakrk24.library.api.dao.BookEntity;
 import com.sda.javakrk24.library.api.dto.BookRequest;
+import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,13 @@ public class BookService {
         bookRepository.save(bookConverter.fromDto(request));
     }
 
-    public List<BookRequest> fetchAllBooks() {
+    public List<BookResponse> fetchAllBooks() {
         return bookRepository.findAll().stream()
                 .map(bookEntity -> bookConverter.fromDao(bookEntity))
                 .collect(Collectors.toList());
     }
 
-    public BookRequest getBookById(Long id) {
+    public BookResponse getBookById(Long id) {
         return bookRepository.findById(id)
                 .map(bookConverter::fromDao)
                 .orElseThrow();
@@ -41,7 +42,7 @@ public class BookService {
     @Transactional
     public void replaceBook(Long id, BookRequest request) {
         BookEntity entityToReplace = bookRepository.findById(id).orElseThrow(() -> new IllegalArgumentException());
-        entityToReplace.setAuthor(request.getAuthor());
+//        entityToReplace.setAuthor(request.getAuthor());
         entityToReplace.setTitle(request.getTitle());
         entityToReplace.setPages(request.getPages());
         entityToReplace.setPublishYear(request.getPublishYear());

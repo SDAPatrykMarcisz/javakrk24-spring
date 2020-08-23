@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table("authors")
+@Table(name = "authors")
 @Data
 public class AuthorEntity {
 
@@ -14,16 +14,16 @@ public class AuthorEntity {
     @GeneratedValue
     private Long id;
 
-    @Column("first_name")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column("last_name")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column("description")
+    @Column(name = "description")
     private String description;
 
-    @Column("birth_year")
+    @Column(name = "birth_year")
     private long birthYear;
 
     @ManyToMany(mappedBy = "authors")

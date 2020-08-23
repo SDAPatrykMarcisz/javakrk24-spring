@@ -1,6 +1,7 @@
 package com.sda.javakrk24.library.api.controller;
 
 import com.sda.javakrk24.library.api.dto.BookRequest;
+import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,12 +26,12 @@ public class BooksController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<BookRequest> getAllBooks(){
+    public List<BookResponse> getAllBooks(){
         return bookService.fetchAllBooks();
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BookRequest getBookById(@PathVariable("id") Long id){
+    public BookResponse getBookById(@PathVariable("id") Long id){
         return bookService.getBookById(id);
     }
 
