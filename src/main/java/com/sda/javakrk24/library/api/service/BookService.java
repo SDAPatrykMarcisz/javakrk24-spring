@@ -3,6 +3,8 @@ package com.sda.javakrk24.library.api.service;
 import com.sda.javakrk24.library.api.dao.BookEntity;
 import com.sda.javakrk24.library.api.dto.BookRequest;
 import com.sda.javakrk24.library.api.dto.BookResponse;
+import com.sda.javakrk24.library.api.exception.ErrorCode;
+import com.sda.javakrk24.library.api.exception.LibraryAppException;
 import com.sda.javakrk24.library.api.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class BookService {
     public BookResponse getBookById(Long id) {
         return bookRepository.findById(id)
                 .map(bookConverter::fromDao)
-                .orElseThrow();
+                .orElseThrow(() -> new LibraryAppException(ErrorCode.BOOK_NOT_FOUND));
     }
 
     @Transactional
