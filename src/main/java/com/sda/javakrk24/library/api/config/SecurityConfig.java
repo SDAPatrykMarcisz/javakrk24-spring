@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -52,14 +53,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/actuator", "/console*/**").permitAll()
-                .antMatchers("/api/**").hasRole("API_USER")
-                .antMatchers("/hello*").hasRole("HELLO_USER")
+                .antMatchers(HttpMethod.GET, "/api/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/**").hasRole("API_USER")
+                .antMatchers(HttpMethod.PUT, "/api/**").hasRole("API_USER")
+                .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("API_USER")
+                .antMatchers("/hello", "/hello*").hasRole("HELLO_USER")
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
                 .permitAll()
                 .and()
             .logout()
-                .permitAll();
+                .permitAll()
+                .and()
+            .httpBasic()
+                .and()
+            .csrf()
+                .disable();
     }
 }
