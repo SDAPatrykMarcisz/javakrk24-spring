@@ -5,14 +5,17 @@ import com.sda.javakrk24.library.api.dto.Author;
 import com.sda.javakrk24.library.api.dto.BookRequest;
 import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.repository.AuthorRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class BookConverter {
 
-    AuthorRepository authorRepository;
+    private AuthorRepository authorRepository;
 
     public BookEntity fromDto(BookRequest bookRequest) {
         BookEntity entity = new BookEntity();

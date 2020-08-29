@@ -16,6 +16,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<ErrorResponse> handleException(RuntimeException exception){
         log.error(exception.toString());
+        exception.printStackTrace();
         return handleAppException(new LibraryAppException(ErrorCode.GENERAL_ERROR));
     }
 

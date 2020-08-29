@@ -1,5 +1,6 @@
 package com.sda.javakrk24.library.api.controller;
 
+import com.sda.javakrk24.library.api.dto.Author;
 import com.sda.javakrk24.library.api.dto.BookRequest;
 import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.service.BookService;
@@ -20,7 +21,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -30,7 +33,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BooksController.class)
 @DisplayName("Books Controller Test")
@@ -131,6 +135,41 @@ class BooksControllerTest {
                 .andExpect(jsonPath("$.pages", equalTo(120)))
                 .andExpect(jsonPath("$.publishYear", equalTo(1920)))
                 .andExpect(jsonPath("$.isbn", equalTo("1234567890")));
+    }
+
+    @Test
+    void shouldReturnAllBooks() throws Exception {
+        List<BookResponse> bookResponseList = new ArrayList<>();
+        BookResponse response1 = BookResponse.builder()
+                .authors(Collections.singletonList(Author.builder()
+                                .firstName("Jan")
+                                .lastName("Kotek")
+                                .birthYear(1965)
+                                .description("Urodzony w żelazowej woli")
+                                .build()
+                        )
+                )
+                .title("Ala w kraju")
+                .isbn("12344")
+                .publishYear(1292)
+                .pages(123)
+                .build();
+        BookResponse response2 = BookResponse.builder()
+                .authors(Collections.emptyList())
+                .title("Ewa w raju")
+                .isbn("1234455")
+                .publishYear(1292)
+                .pages(123)
+                .build();
+        bookResponseList.add(response1);
+        bookResponseList.add(response2);
+        when(bookService.fetchAllBooks()).thenReturn(bookResponseList);
+        mvc.perform(get("/api/books"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$[0].title", equalTo("Ala w kraju")))
+                .andExpect(jsonPath("$[0].authors.size()", equalTo(0)))
+                .andExpect(jsonPath("$[0].pages", equalTo(123)))
+                .andExpect(jsonPath("$[1].title", equalTo("Ewa w raju")));
     }
 
     private String resourceToString(Resource requestBody) throws IOException {
