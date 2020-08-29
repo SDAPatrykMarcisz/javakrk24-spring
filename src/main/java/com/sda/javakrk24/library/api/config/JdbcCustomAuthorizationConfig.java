@@ -26,6 +26,9 @@ public class JdbcCustomAuthorizationConfig extends AbstractSecurityConfig {
     @Autowired
     private UsersRolesRepository usersRolesRepository;
 
+    @Autowired
+    private JdbcCustomUserDetailsProvider provider;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //stworzyc usera i wrzucic do bazy przy pomocy repozytoriow
@@ -48,5 +51,7 @@ public class JdbcCustomAuthorizationConfig extends AbstractSecurityConfig {
                         "left join app_users as users on roles.user_user_id = users.user_id where email=?")
                 .dataSource(dataSource);
                 //.withUser(getAppUser()); pojdzie exception
+
+        //auth.userDetailsService(provider);
     }
 }

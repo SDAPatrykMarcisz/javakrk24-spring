@@ -8,12 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BooksController.class)
 @DisplayName("Books Controller Test")
+@ActiveProfiles("test")
 class BooksControllerTest {
 
     @Autowired
@@ -46,12 +50,16 @@ class BooksControllerTest {
     @MockBean
     private BookService bookService;
 
+    @Mock
+    Principal mockPrincipal;
+
     private MockMvc mvc;
 
     @BeforeEach
     void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(applicationContext)
                 .build();
+        Mockito.when(mockPrincipal.getName()).thenReturn("1");
     }
 
 
@@ -60,11 +68,15 @@ class BooksControllerTest {
         //given
         Resource requestBody = new ClassPathResource("request/savebook.json");
 
+        Principal mockPrincipal = Mockito.mock(Principal.class);
+        Mockito.when(mockPrincipal.getName()).thenReturn("1");
+
         //when
         mvc.perform(
                 post("/api/books")
                         .header("content-type", "application/json")
-                        .content(resourceToString(requestBody)))
+                        .content(resourceToString(requestBody))
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk());
 
         //then
@@ -80,12 +92,15 @@ class BooksControllerTest {
         //given
         Resource requestBody = new ClassPathResource("request/savebook.json");
 
+
+
         //when
         Long expectedId = 100l;
         mvc.perform(
                 put("/api/books/" + expectedId)
                         .header("content-type", "application/json")
-                        .content(resourceToString(requestBody)))
+                        .content(resourceToString(requestBody))
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk());
 
         //then
@@ -93,9 +108,9 @@ class BooksControllerTest {
         Mockito.verify(bookService).replaceBook(eq(expectedId), argumentCaptor.capture());
         assertEquals("jedyny prawdziwy testowy", argumentCaptor.getValue().getTitle());
         assertEquals(3, argumentCaptor.getValue().getAuthors().size());
-        assertEquals(3, argumentCaptor.getValue().getIsbn());
-        assertEquals(3, argumentCaptor.getValue().getPages());
-        assertEquals(3, argumentCaptor.getValue().getPublishYear());
+        assertEquals("data", argumentCaptor.getValue().getIsbn());
+        assertEquals(120, argumentCaptor.getValue().getPages());
+        assertEquals(1992, argumentCaptor.getValue().getPublishYear());
     }
 
     @Test
@@ -107,7 +122,8 @@ class BooksControllerTest {
         mvc.perform(
                 put("/api/books/500")
                         .header("content-type", "application/json")
-                        .content(resourceToString(requestBody)))
+                        .content(resourceToString(requestBody))
+                        .principal(mockPrincipal))
                 .andExpect(status().isInternalServerError())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.code", equalTo("LA1")))
@@ -128,7 +144,8 @@ class BooksControllerTest {
                 .build();
         when(bookService.getBookById(10L)).thenReturn(response);
 
-        mvc.perform(get("/api/books/10"))
+        mvc.perform(get("/api/books/10")
+                .principal(mockPrincipal))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.title", equalTo("Alicja w krainie czarów")))
                 .andExpect(jsonPath("$.authors", equalTo(Collections.EMPTY_LIST)))
@@ -164,10 +181,11 @@ class BooksControllerTest {
         bookResponseList.add(response1);
         bookResponseList.add(response2);
         when(bookService.fetchAllBooks()).thenReturn(bookResponseList);
-        mvc.perform(get("/api/books"))
+        mvc.perform(get("/api/books")
+                .principal(mockPrincipal))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$[0].title", equalTo("Ala w kraju")))
-                .andExpect(jsonPath("$[0].authors.size()", equalTo(0)))
+                .andExpect(jsonPath("$[0].authors.size()", equalTo(1)))
                 .andExpect(jsonPath("$[0].pages", equalTo(123)))
                 .andExpect(jsonPath("$[1].title", equalTo("Ewa w raju")));
     }
