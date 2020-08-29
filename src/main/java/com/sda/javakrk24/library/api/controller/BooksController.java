@@ -3,10 +3,12 @@ package com.sda.javakrk24.library.api.controller;
 import com.sda.javakrk24.library.api.dto.BookRequest;
 import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.service.BookService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /***
@@ -23,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/books")
+@Slf4j
 public class BooksController {
 
     private BookService bookService;
@@ -38,7 +41,8 @@ public class BooksController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveBook(@RequestBody BookRequest request){
+    public void saveBook(@RequestBody BookRequest request, Principal principal){
+        log.info(principal.toString());
         bookService.saveBook(request);
     }
 
