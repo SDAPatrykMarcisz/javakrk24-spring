@@ -25,12 +25,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails user = User.builder()
                 .username("user@user.pl")
                 .password(encoder.encode("123"))
-                .roles()
+                .roles("API_USER")
+                .build();
+
+        UserDetails helloUser = User.builder()
+                .username("hello@user.pl")
+                .password(encoder.encode("123"))
+                .roles("HELLO_USER")
                 .build();
 
         log.info(passwordEncoder().encode("123"));
 
-        auth.inMemoryAuthentication().withUser(user);
+        auth.inMemoryAuthentication().withUser(user).withUser(helloUser);
     }
 
     @Autowired
@@ -51,6 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
+                .permitAll()
+                .and()
+            .logout()
                 .permitAll();
     }
 }
