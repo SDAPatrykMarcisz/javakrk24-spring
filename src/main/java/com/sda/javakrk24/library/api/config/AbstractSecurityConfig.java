@@ -20,8 +20,6 @@ import java.util.Collections;
 @Slf4j
 public abstract class AbstractSecurityConfig extends WebSecurityConfigurerAdapter {
 
-
-
     @Autowired
     protected PasswordEncoder encoder;
 
@@ -56,6 +54,10 @@ public abstract class AbstractSecurityConfig extends WebSecurityConfigurerAdapte
                 .permitAll()
                 .and()
             .httpBasic()
+                .and()
+            .headers()
+                .frameOptions()
+                .sameOrigin()
                 .and()
             .csrf()
                 .disable();
