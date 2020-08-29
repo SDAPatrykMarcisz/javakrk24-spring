@@ -44,7 +44,8 @@ public class JdbcCustomAuthorizationConfig extends AbstractSecurityConfig {
         //a potem wypelnic query
         auth.jdbcAuthentication()
                 .usersByUsernameQuery("select email, password, active from app_users where email=?")
-                .authoritiesByUsernameQuery("select users.email, roles.role from app_users_roles as roles left join app_users as users on roles.user_user_id = users.user_id where email=?")
+                .authoritiesByUsernameQuery("select users.email, roles.role from app_users_roles as roles " +
+                        "left join app_users as users on roles.user_user_id = users.user_id where email=?")
                 .dataSource(dataSource);
                 //.withUser(getAppUser()); pojdzie exception
     }
