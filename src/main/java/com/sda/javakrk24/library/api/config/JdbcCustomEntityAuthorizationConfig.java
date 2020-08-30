@@ -10,21 +10,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
-import javax.sql.DataSource;
-
 @Slf4j
 @Configuration
-@Profile("authorization-jdbc-custom")
-public class JdbcCustomAuthorizationConfig extends AbstractSecurityConfig {
-
-    @Autowired
-    private DataSource dataSource;
+@Profile("authorization-jdbc-custom-with-entity")
+public class JdbcCustomEntityAuthorizationConfig extends AbstractSecurityConfig {
 
     @Autowired
     private UsersRepository usersRepository;
 
     @Autowired
     private UsersRolesRepository usersRolesRepository;
+
+
+    @Autowired
+    private JdbcCustomUserDetailsProvider provider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -41,12 +40,6 @@ public class JdbcCustomAuthorizationConfig extends AbstractSecurityConfig {
         rolesEntity.setRole("ROLE_API_USER");
         usersRolesRepository.save(rolesEntity);
 
-        //a potem wypelnic query
-        auth.jdbcAuthentication()
-                .usersByUsernameQuery("select email, password, active from app_users where email=?")
-                .authoritiesByUsernameQuery("select users.email, roles.role from app_users_roles as roles " +
-                        "left join app_users as users on roles.user_user_id = users.user_id where email=?")
-                .dataSource(dataSource);
-                //.withUser(getAppUser()); pojdzie exception
+        auth.userDetailsService(provider);
     }
 }
