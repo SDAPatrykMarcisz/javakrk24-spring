@@ -4,6 +4,8 @@ import com.sda.javakrk24.library.api.dao.UserEntity;
 import com.sda.javakrk24.library.api.dao.UserRoleEntity;
 import com.sda.javakrk24.library.api.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@ConditionalOnBean(JdbcCustomEntityAuthorizationConfig.class)
 public class JdbcCustomUserDetailsProvider implements UserDetailsService {
 
     private final UsersRepository usersRepository;

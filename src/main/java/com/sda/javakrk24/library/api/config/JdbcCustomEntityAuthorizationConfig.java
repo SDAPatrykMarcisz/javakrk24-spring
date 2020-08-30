@@ -21,7 +21,6 @@ public class JdbcCustomEntityAuthorizationConfig extends AbstractSecurityConfig 
     @Autowired
     private UsersRolesRepository usersRolesRepository;
 
-
     @Autowired
     private JdbcCustomUserDetailsProvider provider;
 
