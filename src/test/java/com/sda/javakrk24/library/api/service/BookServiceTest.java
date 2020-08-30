@@ -4,6 +4,7 @@ import com.sda.javakrk24.library.api.dao.BookEntity;
 import com.sda.javakrk24.library.api.dto.BookResponse;
 import com.sda.javakrk24.library.api.exception.LibraryAppException;
 import com.sda.javakrk24.library.api.external.google.books.GoogleBooksApiClient;
+import com.sda.javakrk24.library.api.repository.AuthorRepository;
 import com.sda.javakrk24.library.api.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +25,15 @@ class BookServiceTest {
     @Mock
     private BookConverter bookConverter;
     @Mock
+    private AuthorRepository authorRepository;
+    @Mock
     private GoogleBooksApiClient booksApiClient;
 
     private BookService bookService;
 
     @BeforeEach
     void setUp(){
-        bookService = new BookService(bookRepository, bookConverter, booksApiClient);
+        bookService = new BookService(bookRepository, authorRepository, bookConverter, booksApiClient);
     }
 
     @Test

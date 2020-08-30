@@ -24,6 +24,8 @@ public class BookConverter {
         entity.setPages(bookRequest.getPages());
         entity.setPublishYear(bookRequest.getPublishYear());
         entity.setIsbn(bookRequest.getIsbn());
+        authorRepository.findAllById(bookRequest.getAuthors())
+                .forEach(author -> author.getBooks().add(entity));
         return entity;
     }
 

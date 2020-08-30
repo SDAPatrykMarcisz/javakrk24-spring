@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 @Slf4j
 @Configuration
 @Profile("authorization-jdbc-custom")
-public class JdbcCustomAuthorizationConfig extends AbstractSecurityConfig {
+public class JdbcCustomSqlAuthorizationConfig extends AbstractSecurityConfig {
 
     @Autowired
     private DataSource dataSource;
