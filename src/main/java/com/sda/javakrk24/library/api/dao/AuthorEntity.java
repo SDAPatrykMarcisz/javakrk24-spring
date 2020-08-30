@@ -26,6 +26,6 @@ public class AuthorEntity {
     @Column(name = "birth_year")
     private long birthYear;
 
-    @ManyToMany(mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
     private List<BookEntity> books;
 }
