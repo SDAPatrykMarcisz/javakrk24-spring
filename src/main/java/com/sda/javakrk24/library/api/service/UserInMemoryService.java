@@ -7,16 +7,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 @ConditionalOnBean(InMemoryAuthorizationConfig.class)
 public class UserInMemoryService implements UserService {
 
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
     private final PasswordEncoder passwordEncoder;
+    private final List<String> requestedUserCreations;
 
     public UserInMemoryService(InMemoryUserDetailsManager inMemoryUserDetailsManager, PasswordEncoder passwordEncoder) {
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
         this.passwordEncoder = passwordEncoder;
+        requestedUserCreations = new LinkedList<>();
     }
 
     @Override
@@ -28,5 +33,6 @@ public class UserInMemoryService implements UserService {
                         .roles()
                         .build()
         );
+        requestedUserCreations.add(email);
     }
 }

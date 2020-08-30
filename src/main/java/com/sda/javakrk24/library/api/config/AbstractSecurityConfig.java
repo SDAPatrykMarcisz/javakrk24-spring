@@ -40,6 +40,7 @@ public abstract class AbstractSecurityConfig extends WebSecurityConfigurerAdapte
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/actuator", "/console*/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/api/users*/**").hasAnyRole("ADMIN", "API_USER")
                 .antMatchers(HttpMethod.GET, "/api/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/**").hasRole("API_USER")
                 .antMatchers(HttpMethod.PUT, "/api/**").hasRole("API_USER")

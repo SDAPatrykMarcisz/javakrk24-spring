@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 @ConditionalOnBean(JdbcCustomEntityAuthorizationConfig.class)
-public class JdbcCustomUserDetailsProvider implements UserDetailsService {
+public class JdbcCustomUserDetailsService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
 
     @Autowired
-    public JdbcCustomUserDetailsProvider(UsersRepository usersRepository) {
+    public JdbcCustomUserDetailsService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 

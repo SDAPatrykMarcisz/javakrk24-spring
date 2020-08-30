@@ -3,6 +3,7 @@ package com.sda.javakrk24.library.api.service;
 import com.sda.javakrk24.library.api.dao.BookEntity;
 import com.sda.javakrk24.library.api.dto.BookRequest;
 import com.sda.javakrk24.library.api.dto.BookResponse;
+import com.sda.javakrk24.library.api.dto.IdResponse;
 import com.sda.javakrk24.library.api.exception.ErrorCode;
 import com.sda.javakrk24.library.api.exception.LibraryAppException;
 import com.sda.javakrk24.library.api.external.google.books.GoogleBooksApiClient;
@@ -32,8 +33,9 @@ public class BookService {
     }
 
     @Transactional
-    public void saveBook(BookRequest request) {
-        bookRepository.save(bookConverter.fromDto(request));
+    public IdResponse saveBook(BookRequest request) {
+        BookEntity save = bookRepository.save(bookConverter.fromDto(request));
+        return IdResponse.builder().id(save.getId()).build();
     }
 
     public List<BookResponse> fetchAllBooks() {

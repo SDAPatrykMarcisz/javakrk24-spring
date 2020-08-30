@@ -22,7 +22,7 @@ public class JdbcCustomEntityAuthorizationConfig extends AbstractSecurityConfig 
     private UsersRolesRepository usersRolesRepository;
 
     @Autowired
-    private JdbcCustomUserDetailsProvider provider;
+    private JdbcCustomUserDetailsService detailsService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -39,6 +39,11 @@ public class JdbcCustomEntityAuthorizationConfig extends AbstractSecurityConfig 
         rolesEntity.setRole("ROLE_API_USER");
         usersRolesRepository.save(rolesEntity);
 
-        auth.userDetailsService(provider);
+        UserRoleEntity adminRole = new UserRoleEntity();
+        adminRole.setUser(userEntity);
+        adminRole.setRole("ROLE_ADMIN");
+        usersRolesRepository.save(adminRole);
+
+        auth.userDetailsService(detailsService);
     }
 }
